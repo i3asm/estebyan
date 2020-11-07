@@ -1,0 +1,47 @@
+<div class="sidebar" data-color="purple" data-background-color="white"
+     data-image="/static/assets/img/sidebar-1.jpg">
+    <!--
+      Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+
+      Tip 2: you can also add an image using data-image tag
+  -->
+    <div class="logo">
+        <a target="_blank" rel="noopener noreferrer"
+           href="{% url 'home' %}" class="simple-text logo-normal">
+            استبيان
+        </a>
+    </div>
+    <div class="sidebar-wrapper">
+        <ul class="nav">
+            <li class="nav-item ">
+                <a class="nav-link" href="{% url 'forms:index' %}">
+                    <i class="material-icons">content_paste</i>
+                    <p>استبياناتي</p>
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link" href="/ui-tables.html">
+                    <i class="material-icons">content_paste</i>
+                    <p>استبياناتي</p>
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link" href="/page-user.html">
+                    <i class="material-icons">person</i>
+                    <p>حسابي</p>
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link" href="/ui-notifications.html">
+                    <i class="material-icons">notifications</i>
+                    <p>الاشعارات</p>
+                </a>
+            </li>
+            <li class="nav-item active-pro">
+                <a class="nav-link" href="{% url 'logout' %}">
+                    <i class="material-icons">directions_run</i>
+                    <p>تسجيل الخروج</p>
+                </a>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,67 @@
+{% extends "layouts/base-rtl.html" %}
+{% block title %} {% endblock %}
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+{% endblock stylesheets %}
+{% block content %}
+
+    <div class="col-md-12 px-0 p-md-4">
+        <div class="card">
+            <div class="card-header card-header-text card-header-primary">
+                <div class="card-text">
+                    <h4 class="card-title">استبياناتي</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th class="text-center">عدد الردود</th>
+                        <th class="text-left">اطلاع وتعديل</th>
+                    </tr>
+                    </thead>
+                    {% if forms %}
+                        {% for form in forms %}
+                            <tbody>
+                            <tr>
+                                <td class="text-right"><a href="{% url 'forms:show' form.id %}">{{ form.name }}</a></td>
+                                <td class="text-center">{{ form.reply_set.count }}</td>
+                                <td class="td-actions text-left">
+                                    <a type="button" rel="tooltip" class="btn btn-success"
+                                       href="{% url 'forms:show' form.id %}">
+                                        <i class="material-icons">grading</i>
+                                    </a>
+                                    <a type="button" rel="tooltip" class="btn btn-info" href="">
+                                        <i class="material-icons">edit</i>
+                                    </a>
+                                    <a type="button" rel="tooltip" class="btn btn-danger" href="">
+                                        <i class="material-icons">close</i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        {% endfor %}
+                    {% endif %}
+                </table>
+                <a type="button" rel="tooltip" class="btn btn-primary" href="{% url 'forms:create' %}">
+                    نموذج جديد
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+    <script>
+        $(document).ready(function () {
+            // Javascript method's body can be found in assets/js/demos.js
+            md.initDashboardPageCharts();
+        });
+    </script>
+
+{% endblock javascripts %}
