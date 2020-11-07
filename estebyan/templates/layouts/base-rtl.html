@@ -13,6 +13,9 @@
 
  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
 
+{# https://django-dashboard-material.appseed.us/ #}
+{# https://demos.creative-tim.com/material-dashboard-django/docs/1.0/getting-started/getting-started-django.html #}
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -36,11 +39,13 @@
     <link href="/static/assets/css/material-dashboard.css?v=2.1.1" rel="stylesheet"/>
     <link href="/static/assets/css/material-dashboard-rtl.css?v=1.1" rel="stylesheet"/>
 
-    <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link href="/static/assets/demo/demo.css" rel="stylesheet"/>
-
     <!-- Specific Page CSS goes HERE  -->
     {% block stylesheets %}{% endblock stylesheets %}
+    <style>
+        body, h1, h2, h3, h4, h5, h6{
+            font-family: "Cairo", "Roboto", "Helvetica", "Arial", sans-serif;
+        }
+    </style>
 </head>
 
 <body class="">
