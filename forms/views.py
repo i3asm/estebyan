@@ -6,7 +6,7 @@ from .models import Form, Question, Reply, Answer
 
 
 def index(request):
-    forms = Form.objects.order_by('-pub_date').all()
+    forms = Form.objects.filter(user_id=request.user.id).order_by('-pub_date')
     context = {
         'forms': forms
     }
@@ -22,7 +22,7 @@ def create(request):
 
 
 def show(request, id):
-    return HttpResponse(Form.objects.get(id=id))
+    return HttpResponse(Form.objects.get(id=id).question_set.all())
 
 
 def edit(request, id):

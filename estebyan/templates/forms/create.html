@@ -43,8 +43,8 @@
 
         function add_question() {
             numberOfQuestions++;
-            const div = document.createElement('div');
-            div.innerHTML = `
+            const card = document.createElement('div');
+            card.innerHTML = `
             <div class="card" id="card${numberOfQuestions}">
                 <div class="card-body">
                     <div class="input-group">
@@ -54,7 +54,7 @@
                     </div>
                 </div>
             </div>`;
-            document.getElementById('form').appendChild(div);
+            document.getElementById('form').appendChild(card);
         }
 
         function deleteQuestion(id) {
