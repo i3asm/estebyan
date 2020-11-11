@@ -6,7 +6,8 @@
 {% block content %}
 
     <div class="col-md-12 px-0 p-md-4">
-        <form id="form">
+        <form id="form" method="post">
+            {% csrf_token %}
             <div class="card">
                 <div class="card-header card-header-text card-header-primary">
                     <div class="card-text">
@@ -14,12 +15,13 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="form-group">
+                    <div class="input-group">
                         <label for="name">اسم الاستبيان</label>
                         <input type="text" class="form-control" name="name" id="name"
                                placeholder="الاسم">
                     </div>
                 </div>
+                <button type="submit" class="btn btn-primary">su</button>
             </div>
             {#            <div class="card">#}
             {#                <div class="card-body">#}

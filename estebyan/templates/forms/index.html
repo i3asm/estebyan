@@ -35,7 +35,8 @@
                                     <a type="button" rel="tooltip" class="btn btn-info" href="">
                                         <i class="material-icons">edit</i>
                                     </a>
-                                    <a type="button" rel="tooltip" class="btn btn-danger" href="">
+                                    <a type="button" rel="tooltip" class="btn btn-danger"
+                                       href="{% url 'forms:delete' form.id %}">
                                         <i class="material-icons">close</i>
                                     </a>
                                 </td>
@@ -44,9 +45,45 @@
                         {% endfor %}
                     {% endif %}
                 </table>
-                <a type="button" rel="tooltip" class="btn btn-primary" href="{% url 'forms:create' %}">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                     نموذج جديد
-                </a>
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">استبيان جديد</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form id="form" action="{% url 'forms:create' %}" method="post">
+                                {% csrf_token %}
+                                <div class="modal-body">
+                                    <div class="col-md-12 px-0 p-md-4">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="name">اسم الاستبيان</label>
+                                                <input type="text" class="form-control" name="name" id="name"
+                                                       placeholder="اسم الاستبيان" autofocus>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
         </div>
     </div>
@@ -56,12 +93,15 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-
     <script>
-        $(document).ready(function () {
-            // Javascript method's body can be found in assets/js/demos.js
-            md.initDashboardPageCharts();
+        {#$(document).ready(function () {#}
+        {#    // Javascript method's body can be found in assets/js/demos.js#}
+        {#    md.initDashboardPageCharts();#}
+        {#});#}
+
+        // Every time a modal is shown, if it has an autofocus element, focus on it.
+        $('.modal').on('shown.bs.modal', function () {
+            $(this).find('[autofocus]').focus();
         });
     </script>
-
 {% endblock javascripts %}
