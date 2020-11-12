@@ -1,0 +1,112 @@
+{% extends "layouts/base-rtl.html" %}
+{% block title %} تحديث الاستبيان {% endblock %}
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+{% endblock stylesheets %}
+{% block content %}
+
+    <div class="col-md-12 px-0 p-md-4">
+        <div id="questions">
+            <form action="{% url 'forms:edit' form.id %}" method="POST">
+                <div class="card">
+                    <div class="card-header card-header-text card-header-primary">
+                        <div class="card-text">
+                            <h4 class="card-title">تحديث الاستبيان</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form action="{% url 'forms:edit' form.id %}" method="POST">
+                            {% csrf_token %}
+                            <div class="m-3">
+                                <label for="description">اسم الاستبيان</label>
+                                <input type="text" name="name" id="description" value="{{ form.name }}"
+                                       class="form-control">
+                            </div>
+                            <div class="m-3">
+                                <label for="description">وصف الاستبيان</label>
+                                <input type="text" name="description" id="description" value="{{ form.description }}"
+                                       class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-primary mx-2">حفظ</button>
+                        </form>
+                    </div>
+                </div>
+                {{ formset }}
+                <button type="submit" class="btn btn-primary mx-2">حفظ</button>
+            </form>
+        </div>
+    </div>
+    <button onclick="add_question()" class="btn btn-success">
+        <i class="material-icons">add_circle</i>
+        اضافة سؤال
+    </button>
+    {#    TODO: add questtio > modal#}
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        نموذج جديد
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">استبيان جديد</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="form" action="{% url 'forms:create' %}" method="post">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="col-md-12 px-0 p-md-4">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="name">اسم الاستبيان</label>
+                                    <input type="text" class="form-control" name="name" id="name"
+                                           placeholder="" autofocus>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
+                        <button type="submit" class="btn btn-primary">حفظ السؤال</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block javascripts %}
+    <script>
+        let numberOfQuestions = 0;
+        let max = 0;
+
+        function add_question() {
+            const card = document.createElement('div');
+            card.innerHTML = `
+            <div class="card" id="card${numberOfQuestions}">
+                <div class="card-body">
+                    <label for="question${numberOfQuestions}">السؤال</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="question${numberOfQuestions}" id="question${numberOfQuestions}">
+                        <button type="button" onclick="deleteQuestion(${numberOfQuestions})" class="btn btn-danger mx-2">Delete</button>
+                    </div>
+                </div>
+            </div>`;
+            document.getElementById('questions').appendChild(card);
+            numberOfQuestions++;
+            max++;
+        }
+
+        function deleteQuestion(id) {
+            let elem = document.getElementById("card" + id);
+            elem.parentNode.removeChild(elem);
+            numberOfQuestions--;
+        }
+
+    </script>
+{% endblock javascripts %}
+

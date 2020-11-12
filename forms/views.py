@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
 from django import template
-from .models import Form, Question, Reply, Answer
+from .models import Form, Question
 from .forms import FormForm
+from django.forms import modelformset_factory
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 
@@ -23,25 +24,44 @@ def create(request):
         form = FormForm(request.POST)
         if form.is_valid():
             tmp = Form.objects.create(name=form.cleaned_data['name'], pub_date=timezone.now(),
-                                      user_id=request.user.id).id
+                                      user_id=request.user.id, description=form.cleaned_data['description']).id
             # return redirect('forms:show', id=tmp)
             return redirect('forms:index')
-
+        else:
+            return redirect('forms:index')
     else:
-        form = FormForm()
         context = {
-            'form': form
+            'form': FormForm()
         }
         return render(request, 'forms/create.html', context)
 
 
 def show(request, id):
-    return HttpResponse(Form.objects.get(id=id).question_set.all())
+    context = {
+        'form': Form.objects.get(id=id)
+    }
+    return render(request, 'forms/show.html', context)
 
 
 @login_required()
 def edit(request, id):
-    return HttpResponse(Form.objects.get(id=id))
+    questionFormSet = modelformset_factory(Question, fields=['text'], extra=1)
+    if request.method == 'POST':
+        form = FormForm(request.POST)
+        if form.is_valid():
+            print("is valid")
+            tmp = Form.objects.get(id=id)
+            tmp.name = form.cleaned_data['name']
+            tmp.description = form.cleaned_data['description']
+            tmp.save()
+        return redirect('forms:edit', id=id)
+
+    else:
+        context = {
+            'form': Form.objects.get(id=id),
+            'formset': questionFormSet(queryset=Question.objects.filter(form_id=id)),
+        }
+        return render(request, 'forms/edit.html', context)
 
 
 @login_required()
@@ -53,9 +73,13 @@ def delete(request, id):
     return redirect('forms:index')
 
 
+@login_required()
+def add_questions(request, form_id):
+    pass
+
+
 def pages(request):
     context = {}
-
     # for home page requests:
     if request.path == '/' or request.path == 'home':
         return render(request, 'index.html')
@@ -69,11 +93,9 @@ def pages(request):
         return HttpResponse(html_template.render(context, request))
 
     except template.TemplateDoesNotExist:
-
         html_template = loader.get_template('page-404.html')
         return HttpResponse(html_template.render(context, request))
 
     except:
-
         html_template = loader.get_template('page-500.html')
         return HttpResponse(html_template.render(context, request))

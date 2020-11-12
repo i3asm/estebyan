@@ -17,6 +17,7 @@
                     <thead>
                     <tr>
                         <th>الاسم</th>
+                        <th class="text-center">تاريخ النشر</th>
                         <th class="text-center">عدد الردود</th>
                         <th class="text-left">اطلاع وتعديل</th>
                     </tr>
@@ -26,13 +27,15 @@
                             <tbody>
                             <tr>
                                 <td class="text-right"><a href="{% url 'forms:show' form.id %}">{{ form.name }}</a></td>
+                                <td class="text-center">{{ form.pub_date|timesince }}</td>
                                 <td class="text-center">{{ form.reply_set.count }}</td>
                                 <td class="td-actions text-left">
                                     <a type="button" rel="tooltip" class="btn btn-success"
                                        href="{% url 'forms:show' form.id %}">
                                         <i class="material-icons">grading</i>
                                     </a>
-                                    <a type="button" rel="tooltip" class="btn btn-info" href="">
+                                    <a type="button" rel="tooltip" class="btn btn-info"
+                                       href="{% url 'forms:edit' form.id %}">
                                         <i class="material-icons">edit</i>
                                     </a>
                                     <a type="button" rel="tooltip" class="btn btn-danger"
@@ -65,24 +68,28 @@
                                 <div class="modal-body">
                                     <div class="col-md-12 px-0 p-md-4">
                                         <div class="card-body">
-                                            <div class="form-group">
+                                            <div class="">
                                                 <label for="name">اسم الاستبيان</label>
-                                                <input type="text" class="form-control" name="name" id="name"
-                                                       placeholder="اسم الاستبيان" autofocus>
+                                                <input type="text" class="form-control required" name="name" id="name"
+                                                       placeholder="الاسم" autofocus required>
+                                            </div>
+                                            <div class="">
+                                                <label for="name">وصف الاستبيان</label>
+                                                <input type="text" class="form-control" name="description" id="name"
+                                                       placeholder="الوصف">
                                             </div>
                                         </div>
                                     </div>
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
+                                    <button type="submit" class="btn btn-primary">انشاء الاستبيان</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
-
 
             </div>
         </div>
@@ -97,7 +104,9 @@
         {#$(document).ready(function () {#}
         {#    // Javascript method's body can be found in assets/js/demos.js#}
         {#    md.initDashboardPageCharts();#}
-        {#});#}
+        {#})
+        ;
+        #}
 
         // Every time a modal is shown, if it has an autofocus element, focus on it.
         $('.modal').on('shown.bs.modal', function () {

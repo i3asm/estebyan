@@ -1,0 +1,59 @@
+{% extends "layouts/base-rtl.html" %}
+{% block title %} {% endblock %}
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+{% endblock stylesheets %}
+{% block content %}
+
+    <div class="col-md-12 px-0 p-md-4">
+        <div id="form">
+            <div class="card">
+                <div class="card-header card-header-text card-header-primary">
+                    <div class="card-text">
+                        <h4 class="card-title">{{ form.name }}</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-center">{{ form.description }}</p>
+                </div>
+            </div>
+        </div>
+        <button onclick="add_question()" class="btn btn-success">
+            <i class="material-icons">add_circle</i>
+            اضافة سؤال
+        </button>
+        <br>
+        <button class="btn btn-primary">
+            <i class="material-icons">add_circle</i>
+            اضافة سؤال
+        </button>
+    </div>
+{% endblock content %}
+{% block javascripts %}
+    <script>
+        let numberOfQuestions = 0;
+
+        function add_question() {
+            numberOfQuestions++;
+            const card = document.createElement('div');
+            card.innerHTML = `
+            <div class="card" id="card${numberOfQuestions}">
+                <div class="card-body">
+                    <div class="input-group">
+                        <label for="question${numberOfQuestions}">السؤال</label>
+                        <input type="text" class="form-control" name="question${numberOfQuestions}" id="question${numberOfQuestions}">
+                        <button type="button" onclick="deleteQuestion(${numberOfQuestions})" class="btn btn-danger mx-2">Delete</button>
+                    </div>
+                </div>
+            </div>`;
+            document.getElementById('form').appendChild(card);
+        }
+
+        function deleteQuestion(id) {
+            let elem = document.getElementById("card" + id);
+            elem.parentNode.removeChild(elem);
+        }
+
+    </script>
+{% endblock javascripts %}
+

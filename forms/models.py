@@ -4,6 +4,7 @@ from django.conf import settings
 
 class Form(models.Model):
     name = models.CharField(max_length=250)
+    description = models.TextField(default='', blank=True)
     pub_date = models.DateTimeField('date published')
     without_login = models.BooleanField(default=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
