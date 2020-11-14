@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django import template
 from .models import Form, Question
-from .forms import FormForm
+from .forms import FormForm, QuestionForm
 from django.forms import modelformset_factory
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -45,7 +45,7 @@ def show(request, id):
 
 @login_required()
 def edit(request, id):
-    questionFormSet = modelformset_factory(Question, fields=['text'], extra=1)
+    questionFormSet = modelformset_factory(Question, fields=['text'], extra=1, can_delete=True)
     if request.method == 'POST':
         form = FormForm(request.POST)
         if form.is_valid():
@@ -65,17 +65,23 @@ def edit(request, id):
 
 
 @login_required()
+def add_questions(request, id):
+    questionFormSet = modelformset_factory(QuestionForm)
+    if request.method == 'POST':
+        formset = questionFormSet(request.POST)
+        if formset.is_valid():
+            pass
+
+    return redirect('forms:edit', id)
+
+
+@login_required()
 def delete(request, id):
     form = Form.objects.get(id=id)
     print(form)
     if form.user_id == request.user.id:
         print(form.delete())
     return redirect('forms:index')
-
-
-@login_required()
-def add_questions(request, form_id):
-    pass
 
 
 def pages(request):

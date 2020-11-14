@@ -7,31 +7,45 @@
 
     <div class="col-md-12 px-0 p-md-4">
         <div id="questions">
-            <form action="{% url 'forms:edit' form.id %}" method="POST">
-                <div class="card">
-                    <div class="card-header card-header-text card-header-primary">
-                        <div class="card-text">
-                            <h4 class="card-title">تحديث الاستبيان</h4>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <form action="{% url 'forms:edit' form.id %}" method="POST">
-                            {% csrf_token %}
-                            <div class="m-3">
-                                <label for="description">اسم الاستبيان</label>
-                                <input type="text" name="name" id="description" value="{{ form.name }}"
-                                       class="form-control">
-                            </div>
-                            <div class="m-3">
-                                <label for="description">وصف الاستبيان</label>
-                                <input type="text" name="description" id="description" value="{{ form.description }}"
-                                       class="form-control">
-                            </div>
-                            <button type="submit" class="btn btn-primary mx-2">حفظ</button>
-                        </form>
+            <div class="card">
+                <div class="card-header card-header-text card-header-primary">
+                    <div class="card-text">
+                        <h4 class="card-title">تحديث الاستبيان</h4>
                     </div>
                 </div>
-                {{ formset }}
+                <div class="card-body">
+                    <form action="{% url 'forms:edit' form.id %}" method="POST">
+                        {% csrf_token %}
+                        <div class="m-3">
+                            <label for="description">اسم الاستبيان</label>
+                            <input type="text" name="name" id="description" value="{{ form.name }}"
+                                   class="form-control">
+                        </div>
+                        <div class="m-3">
+                            <label for="description">وصف الاستبيان</label>
+                            <input type="text" name="description" id="description" value="{{ form.description }}"
+                                   class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary mx-2">حفظ</button>
+                    </form>
+                </div>
+            </div>
+            <form action="{% url 'forms:add_question' form.id %}" method="POST">
+                {% csrf_token %}
+                {{ formset.management_form }}
+                {% for form in formset %}
+                    <div class="card">
+                        <div class="card-body">
+                            <label for="question${numberOfQuestions}">السؤال</label>
+                            <div class="input-group">
+                                {{ form.text }}
+                                <button type="button" onclick="deleteQuestion(${numberOfQuestions})"
+                                        class="btn btn-danger mx-2">Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
                 <button type="submit" class="btn btn-primary mx-2">حفظ</button>
             </form>
         </div>
@@ -81,7 +95,7 @@
 {% endblock content %}
 {% block javascripts %}
     <script>
-        let numberOfQuestions = 0;
+        let numberOfQuestions = document.getElementById('id_form-TOTAL_FORMS').getAttribute('value')
         let max = 0;
 
         function add_question() {
