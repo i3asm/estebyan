@@ -32,17 +32,30 @@
             </div>
             <form action="{% url 'forms:add_question' form.id %}" method="POST">
                 {% csrf_token %}
+                {#                {{ formset }}#}
                 {{ formset.management_form }}
                 {% for form in formset %}
                     <div class="card">
                         <div class="card-body">
                             <label for="question${numberOfQuestions}">السؤال</label>
                             <div class="input-group">
+                                {{ form.id }}
                                 {{ form.text }}
                                 <button type="button" onclick="deleteQuestion(${numberOfQuestions})"
                                         class="btn btn-danger mx-2">Delete
                                 </button>
                             </div>
+                            {% for dict in formset.errors %}
+                                {% for error in dict.values %}
+                                    {{ error }}
+                                {% endfor %}
+                            {% endfor %}
+                            <small class="text-danger">{{ form.date_error_message }}</small>
+                            <small class="text-danger">{{ form.non_field_errors }}</small>
+                            <small class="text-danger">{{ form.unique_error_message }}</small>
+                            <small class="text-danger">{{ form.has_error }}</small>
+                            <small class="text-danger">{{ form.errors }}</small>
+                            <small class="text-danger">{{ formset.get_date_error_message }}</small>
                         </div>
                     </div>
                 {% endfor %}

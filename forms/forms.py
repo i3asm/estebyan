@@ -12,5 +12,3 @@ class QuestionForm(ModelForm):
     class Meta:
         model = Question
         fields = ['text']
-
-

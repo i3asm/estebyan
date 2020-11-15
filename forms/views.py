@@ -4,7 +4,7 @@ from django.template import loader
 from django import template
 from .models import Form, Question
 from .forms import FormForm, QuestionForm
-from django.forms import modelformset_factory
+from django.forms import modelformset_factory, TextInput
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 
@@ -45,11 +45,11 @@ def show(request, id):
 
 @login_required()
 def edit(request, id):
-    questionFormSet = modelformset_factory(Question, fields=['text'], extra=1, can_delete=True)
+    # TODO: make editing & deleting available only for the owner
+    question_formset = add_questions(request, id)
     if request.method == 'POST':
         form = FormForm(request.POST)
         if form.is_valid():
-            print("is valid")
             tmp = Form.objects.get(id=id)
             tmp.name = form.cleaned_data['name']
             tmp.description = form.cleaned_data['description']
@@ -59,20 +59,27 @@ def edit(request, id):
     else:
         context = {
             'form': Form.objects.get(id=id),
-            'formset': questionFormSet(queryset=Question.objects.filter(form_id=id)),
+            'formset': question_formset(queryset=Question.objects.filter(form_id=id)),
         }
         return render(request, 'forms/edit.html', context)
 
 
 @login_required()
 def add_questions(request, id):
-    questionFormSet = modelformset_factory(QuestionForm)
+    question_formset = modelformset_factory(Question, fields=['text'], extra=1, widgets={
+        'text': TextInput(attrs={'class': 'form-control'})
+    })
     if request.method == 'POST':
-        formset = questionFormSet(request.POST)
-        if formset.is_valid():
-            pass
-
-    return redirect('forms:edit', id)
+        formset = question_formset(request.POST)
+        for form in formset:
+            if form.is_valid():
+                question = form.save(commit=False)
+                question.form_id = id
+                question.text = form.cleaned_data['text']
+                question.save()
+        return redirect('forms:edit', id)
+    else:
+        return question_formset
 
 
 @login_required()

@@ -6,11 +6,11 @@ class Form(models.Model):
     name = models.CharField(max_length=250)
     description = models.TextField(default='', blank=True)
     pub_date = models.DateTimeField('date published')
-    without_login = models.BooleanField(default=True)
+    without_login = models.BooleanField(default=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Question(models.Model):
@@ -18,7 +18,7 @@ class Question(models.Model):
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.text
+        return str(self.text)
 
 
 class Reply(models.Model):
@@ -34,4 +34,4 @@ class Answer(models.Model):
     reply = models.ForeignKey(Reply, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.text
+        return str(self.text)

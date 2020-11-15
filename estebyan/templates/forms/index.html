@@ -26,7 +26,7 @@
                         {% for form in forms %}
                             <tbody>
                             <tr>
-                                <td class="text-right"><a href="{% url 'forms:show' form.id %}">{{ form.name }}</a></td>
+                                <td class="text-right"><a href="{% url 'forms:edit' form.id %}">{{ form.name }}</a></td>
                                 <td class="text-center">{{ form.pub_date|timesince }}</td>
                                 <td class="text-center">{{ form.reply_set.count }}</td>
                                 <td class="td-actions text-left">
