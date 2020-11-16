@@ -18,6 +18,7 @@
                     <tr>
                         <th>الاسم</th>
                         <th class="text-center">تاريخ النشر</th>
+                        <th class="text-center d-none d-sm-none d-md-block">عدد الأسئلة</th>
                         <th class="text-center">عدد الردود</th>
                         <th class="text-left">اطلاع وتعديل</th>
                     </tr>
@@ -28,6 +29,7 @@
                             <tr>
                                 <td class="text-right"><a href="{% url 'forms:edit' form.id %}">{{ form.name }}</a></td>
                                 <td class="text-center">{{ form.pub_date|timesince }}</td>
+                                <td class="text-center d-none d-sm-none d-md-block">{{ form.question_set.count }}</td>
                                 <td class="text-center">{{ form.reply_set.count }}</td>
                                 <td class="td-actions text-left">
                                     <a type="button" rel="tooltip" class="btn btn-success"

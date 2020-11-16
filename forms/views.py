@@ -75,7 +75,7 @@ def add_questions(request, id):
             if form.is_valid():
                 question = form.save(commit=False)
                 question.form_id = id
-                question.text = form.cleaned_data['text']
+                print("aaaa", form['text'])
                 question.save()
         return redirect('forms:edit', id)
     else:
