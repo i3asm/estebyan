@@ -1,7 +1,6 @@
 from django.contrib import admin
-from django.urls import re_path, path, include
+from django.urls import path, include
 from forms import views
-
 from estebyan.views import signup_view
 
 urlpatterns = [
@@ -12,5 +11,8 @@ urlpatterns = [
     path('', views.pages, name='home'),
 
     # for static pages
-    re_path(r'^.*\.*', views.pages, name='pages'),
+    # re_path(r'^.*\.*', views.pages, name='pages'),
 ]
+# handler403 = views.handler403
+# handler404 = views.handler404
+# handler500 = views.handler500

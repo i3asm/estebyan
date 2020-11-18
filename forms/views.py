@@ -4,14 +4,14 @@ from django.template import loader
 from django import template
 from .models import Form, Question
 from .forms import FormForm, QuestionForm
-from django.forms import modelformset_factory, TextInput
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 
 
 @login_required()
 def index(request):
-    forms = Form.objects.filter(user_id=request.user.id).order_by('-pub_date')
+    forms = Form.objects.filter(user=request.user).order_by('-pub_date')
     context = {
         'forms': forms
     }
@@ -23,30 +23,27 @@ def create(request):
     if request.method == 'POST':
         form = FormForm(request.POST)
         if form.is_valid():
-            tmp = Form.objects.create(name=form.cleaned_data['name'], pub_date=timezone.now(),
-                                      user_id=request.user.id, description=form.cleaned_data['description']).id
-            # return redirect('forms:show', id=tmp)
+            Form.objects.create(name=form.cleaned_data['name'], pub_date=timezone.now(),
+                                user_id=request.user.id, description=form.cleaned_data['description'])
             return redirect('forms:index')
         else:
             return redirect('forms:index')
     else:
-        context = {
-            'form': FormForm()
-        }
-        return render(request, 'forms/create.html', context)
+        return render(request, 'page-404.html')
 
 
+@login_required()
 def show(request, id):
     context = {
-        'form': Form.objects.get(id=id)
+        'form': Form.objects.get(id=id, user=request.user)
     }
     return render(request, 'forms/show.html', context)
 
 
 @login_required()
 def edit(request, id):
-    # TODO: make editing & deleting available only for the owner
-    question_formset = add_questions(request, id)
+    if Form.objects.get(id=id).user != request.user:
+        return render(request, 'page-403.html')
     if request.method == 'POST':
         form = FormForm(request.POST)
         if form.is_valid():
@@ -55,40 +52,76 @@ def edit(request, id):
             tmp.description = form.cleaned_data['description']
             tmp.save()
         return redirect('forms:edit', id=id)
-
     else:
         context = {
             'form': Form.objects.get(id=id),
-            'formset': question_formset(queryset=Question.objects.filter(form_id=id)),
         }
         return render(request, 'forms/edit.html', context)
 
 
 @login_required()
-def add_questions(request, id):
-    question_formset = modelformset_factory(Question, fields=['text'], extra=1, widgets={
-        'text': TextInput(attrs={'class': 'form-control'})
-    })
-    if request.method == 'POST':
-        formset = question_formset(request.POST)
-        for form in formset:
-            if form.is_valid():
-                question = form.save(commit=False)
-                question.form_id = id
-                print("aaaa", form['text'])
-                question.save()
-        return redirect('forms:edit', id)
+def delete(request, id):
+    form = Form.objects.get(id=id)
+    if form.user != request.user:
+        return render(request, 'page-403.html')
     else:
-        return question_formset
+        form.delete()
+    return redirect('forms:index')
 
 
 @login_required()
-def delete(request, id):
-    form = Form.objects.get(id=id)
-    print(form)
-    if form.user_id == request.user.id:
-        print(form.delete())
-    return redirect('forms:index')
+def create_question(request, form_id):
+    if Form.objects.get(id=form_id).user != request.user:
+        return render(request, 'page-403.html')
+    if request.method == 'POST':
+        question = QuestionForm(request.POST)
+        if question.is_valid():
+            Question.objects.create(form_id=form_id, text=question.cleaned_data['text'])
+        return redirect('forms:edit', form_id)
+
+
+def edit_question(request, form_id, question_id):
+    if Form.objects.get(id=form_id).user != request.user:
+        return render(request, 'page-403.html')
+    if request.method == 'POST':
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            question = Question.objects.get(id=question_id)
+            question.text = form.cleaned_data['text']
+            question.save()
+        return redirect('forms:edit', form_id)
+    else:
+        return redirect('forms:edit', form_id)
+
+
+def delete_question(request, form_id, question_id):
+    if Form.objects.get(id=form_id).user != request.user:
+        return render(request, 'page-403.html')
+    if request.method == 'POST':
+        Question.objects.get(id=question_id).delete()
+        return redirect('forms:edit', form_id)
+    else:
+        return redirect('forms:edit', form_id)
+
+
+def preview(request, id):
+    pass
+
+
+def reply(request, id):
+    pass
+
+
+def handler403(request, exception):
+    return render(request, 'page-403.html', status=403)
+
+
+def handler404(request, exception):
+    return render(request, 'page-404.html', status=404)
+
+
+def handler500(request):
+    return render(request, 'page-500.html', status=500)
 
 
 def pages(request):

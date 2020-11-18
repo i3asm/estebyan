@@ -19,69 +19,124 @@
                         <div class="m-3">
                             <label for="description">اسم الاستبيان</label>
                             <input type="text" name="name" id="description" value="{{ form.name }}"
-                                   class="form-control">
+                                   class="form-control" required>
                         </div>
                         <div class="m-3">
                             <label for="description">وصف الاستبيان</label>
-                            <input type="text" name="description" id="description" value="{{ form.description }}"
-                                   class="form-control">
+                            <textarea type="text" name="description" id="description"
+                                      class="form-control" rows="3">{{ form.description }}</textarea>
                         </div>
                         <button type="submit" class="btn btn-primary mx-2">حفظ</button>
                     </form>
                 </div>
             </div>
-            <form action="{% url 'forms:add_question' form.id %}" method="POST">
-                {% csrf_token %}
-                {{ formset.management_form }}
-                {% for form in formset %}
-                    <div class="card">
-                        <div class="card-body">
-                            <label for="question${numberOfQuestions}">السؤال</label>
-                            <div class="input-group">
-                                {{ form.id }}
-                                {{ form.text }}
+            {% for question in form.question_set.all %}
+                <div class="card">
+                    <div class="card-body">
+                        <label for="text">السؤال</label>
+                        <input type="text" id="text" value="{{ question.text }}" class="form-control" disabled>
+                        <br>
+                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                data-target="#editQuestionModal{{ question.id }}">
+                            تحديث السؤال
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="editQuestionModal{{ question.id }}" tabindex="-1" role="dialog"
+                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">تحديث السؤال</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form id="form" action="{% url 'forms:edit_question' form.id question.id %}"
+                                          method="post">
+                                        {% csrf_token %}
+                                        <div class="modal-body">
+                                            <div class="col-md-12 px-0 p-md-4">
+                                                <div class="card-body">
+                                                    <div class="form-group">
+                                                        <label for="text">عنوان السؤال</label>
+                                                        <input type="text" class="form-control" name="text" id="text"
+                                                               value="{{ question.text }}" autofocus>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء
+                                            </button>
+                                            <button type="submit" class="btn btn-primary">حفظ السؤال</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-                            {% for dict in formset.errors %}
-                                {% for error in dict.values %}
-                                    {{ error }}
-                                {% endfor %}
-                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn btn-danger" data-toggle="modal"
+                                data-target="#deleteQuestionModal{{ question.id }}">
+                            حذف السؤال
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="deleteQuestionModal{{ question.id }}" tabindex="-1" role="dialog"
+                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">حذف السؤال</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form action="{% url 'forms:delete_question' form.id question.id %}" method="post">
+                                        {% csrf_token %}
+                                        <div class="modal-body">
+                                            <div class="col-md-12 px-0 p-md-4">
+                                                <div class="card-body">
+                                                    <h5 class="align-center">هل تريد بالتأكيد حذف السؤال؟</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء
+                                            </button>
+                                            <button type="submit" class="btn btn-danger">حذف السؤال</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                {% endfor %}
-                <button type="submit" class="btn btn-primary mx-2">حفظ</button>
-            </form>
+                </div>
+            {% endfor %}
         </div>
     </div>
-    <button onclick="add_question()" class="btn btn-success">
-        <i class="material-icons">add_circle</i>
-        اضافة سؤال
-    </button>
-    {#    TODO: add questtio > modal#}
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-        نموذج جديد
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addQuestionModal">
+        سؤال جديد
     </button>
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+    <div class="modal fade" id="addQuestionModal" tabindex="-1" role="dialog"
          aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">استبيان جديد</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">سؤال جديد</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="form" action="{% url 'forms:create' %}" method="post">
+                <form id="form" action="{% url 'forms:create_question' form.id %}" method="post">
                     {% csrf_token %}
                     <div class="modal-body">
                         <div class="col-md-12 px-0 p-md-4">
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label for="name">اسم الاستبيان</label>
-                                    <input type="text" class="form-control" name="name" id="name"
-                                           placeholder="" autofocus>
+                                    <label for="text">عنوان السؤال</label>
+                                    <input type="text" class="form-control" name="text" id="text" autofocus>
                                 </div>
                             </div>
                         </div>
@@ -123,6 +178,13 @@
             numberOfQuestions--;
         }
 
+        // Every time a modal is shown, if it has an autofocus element, focus on it.
+        //$('.modal').on('shown.bs.modal', function () {
+            //$(this).find('[autofocus]').focus();
+        //});
+        //$(document).on('shown.bs.modal', '.modal', function () {
+            //$(this).find('[autofocus]').focus();
+        //});
     </script>
 {% endblock javascripts %}
 
