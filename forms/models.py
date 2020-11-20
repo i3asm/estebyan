@@ -13,8 +13,17 @@ class Form(models.Model):
         return str(self.name)
 
 
+QUESTION_TYPES = (
+    ('T', 'Text'),
+    ('M', 'multiple choice'),
+    ('R', 'radio'),
+    ('number', 'Number'),
+)
+
+
 class Question(models.Model):
     text = models.CharField(max_length=200)
+    type = models.CharField(max_length=60, choices=QUESTION_TYPES, blank=True, default='T')
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
 
     def __str__(self):

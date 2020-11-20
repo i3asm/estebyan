@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from django.conf.global_settings import LOGIN_REDIRECT_URL, LOGIN_URL
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -126,3 +128,4 @@ STATIC_ROOT = str(BASE_DIR / '/staticfiles')
 STATICFILES_DIRS = (
     BASE_DIR / 'estebyan/static'),
 LOCALE_PATHS = [BASE_DIR / 'locale']
+LOGIN_REDIRECT_URL = 'forms:'

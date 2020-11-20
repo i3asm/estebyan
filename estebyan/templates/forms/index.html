@@ -20,7 +20,7 @@
                         <th class="text-center">تاريخ النشر</th>
                         <th class="text-center d-none d-sm-none d-md-block">عدد الأسئلة</th>
                         <th class="text-center">عدد الردود</th>
-                        <th class="text-left">اطلاع وتعديل</th>
+                        <th class="text-left">عرض وتحديث</th>
                     </tr>
                     </thead>
                     {% if forms %}
@@ -31,24 +31,25 @@
                                 <td class="text-center">{{ form.pub_date }}</td>
                                 <td class="text-center d-none d-sm-none d-md-block">{{ form.question_set.count }}</td>
                                 <td class="text-center">{{ form.reply_set.count }}</td>
-                                <td class="td-actions text-left">
-                                    <a type="button" rel="tooltip" class="btn btn-success"
-                                       href="{% url 'forms:show' form.id %}">
-                                        <i class="material-icons">grading</i>
-                                    </a>
-                                    <a type="button" rel="tooltip" class="btn btn-info"
-                                       href="{% url 'forms:edit' form.id %}">
-                                        <i class="material-icons">edit</i>
-                                    </a>
-                                    <button type="button" class="btn btn-danger" data-toggle="modal"
-                                            data-target="#deleteFormModal{{ form.id }}">
-                                        <i class="material-icons">close</i>
-                                    </button>
+                                <td class="text-left">
+                                    <div class="td-actions">
+                                        <a type="button" rel="tooltip" class="btn btn-success"
+                                           href="{% url 'forms:show' form.id %}">
+                                            <i class="material-icons" title="عرض الاستبيان">grading</i>
+                                        </a>
+                                        <a type="button" rel="tooltip" class="btn btn-info"
+                                           href="{% url 'forms:edit' form.id %}">
+                                            <i class="material-icons" title="تحديث الاستبيان">edit</i>
+                                        </a>
+                                        <button type="button" class="btn btn-danger" data-toggle="modal"
+                                                data-target="#deleteFormModal{{ form.id }}">
+                                            <i class="material-icons" title="حذف الاستبيان">close</i>
+                                        </button>
+                                    </div>
 
                                     <!-- Modal -->
                                     <div class="modal fade" id="deleteFormModal{{ form.id }}" tabindex="-1"
-                                         role="dialog"
-                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                         role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -64,8 +65,10 @@
                                                     <div class="modal-body">
                                                         <div class="col-md-12 px-0 p-md-4">
                                                             <div class="card-body">
-                                                                <h5 class="align-center">هل تريد بالتأكيد حذف
-                                                                    استبيان: <span class="text-danger">{{ form.name }}</span>  ؟</h5>
+                                                                <h5 class="text-center">هل تريد بالتأكيد حذف
+                                                                    استبيان: <span
+                                                                            class="text-danger">{{ form.name }}</span> ؟
+                                                                </h5>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -86,7 +89,7 @@
                     {% endif %}
                 </table>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                    نموذج جديد
+                    استبيان جديد
                 </button>
 
                 <!-- Modal -->
@@ -96,7 +99,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">استبيان جديد</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <button type="button" class="close" dvta-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>

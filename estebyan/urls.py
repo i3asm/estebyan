@@ -13,6 +13,6 @@ urlpatterns = [
     # for static pages
     # re_path(r'^.*\.*', views.pages, name='pages'),
 ]
-# handler403 = views.handler403
-# handler404 = views.handler404
-# handler500 = views.handler500
+handler403 = views.handler403
+handler404 = views.handler404
+handler500 = views.handler500

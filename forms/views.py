@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.template import loader
 from django import template
 from .models import Form, Question
@@ -34,8 +34,12 @@ def create(request):
 
 @login_required()
 def show(request, id):
+    try:
+        form = Form.objects.get(id=id, user=request.user)
+    except Form.DoesNotExist:
+        raise Http404("الاستبيان غير موجود")
     context = {
-        'form': Form.objects.get(id=id, user=request.user)
+        'form': form
     }
     return render(request, 'forms/show.html', context)
 
